@@ -23,9 +23,9 @@ lift_NW = [mean(fz_NW_AOA_0) mean(fz_NW_AOA_4) mean(fz_NW_AOA_8) mean(fz_NW_AOA_
 
 %Lift - No Winglet
 rho = 1.225 ;   %standard atmospheric density
-c = .155575 ;   %chord length
-s = .1875 ; %span of wing
-A = c*s ;   %wing area
+span = .1875 ;  %m, span of wing
+chord = .155575 ; %m, chord length of wing
+A = span*chord ;   %wing area
 c_l_NW = (2.*lift_NW)./((rho*(v^2)*A)) ;   %coefficient of lift 
 
 figure(1)
@@ -61,26 +61,36 @@ for ii = 1:9
     drag_sting = drag_nosting - 1.22 ; %drag force accounting for sting
     drag_NW(ii) = R(ii) * drag_sting(ii) ;
 end 
-c_d_nosting = (2.*drag_nosting)./((rho*(v^2)*S)) ;   %uncorrected coefficient of drag
-c_d_NW = (2.*drag_NW)./((rho*(v^2)*S)) ;    %coefficient of drag
+c_d_nosting = (2.*drag_nosting)./((rho*(v^2)*A)) ;   %uncorrected coefficient of drag
+c_d_NW = (2.*drag_NW)./((rho*(v^2)*A)) ;    %coefficient of drag
 
 figure(2)
-plot(alpha,c_d_NW,alpha,c_d_nosting)
+subplot(1,2,1)
+plot(alpha,c_d_NW)
 xlabel('alpha (degrees)')
 ylabel('coefficient of drag')
-title('C_d versus Angle of Attack -- Without Winglet')
-legend('corrected for sting','raw data')
-axis([-5 15 0 .4])
+title('C_d v Angle of Attack -corrected- No Winglet')
+subplot(1,2,2)
+plot(alpha,c_d_nosting)
+xlabel('alpha (degrees)')
+ylabel('coefficient of drag')
+title('C_d v Angle of Attack -raw- No Winglet')
 
 ratio_NW = lift_NW./drag_nosting ;
 ratio_NW_corrected = lift_NW./drag_NW ;    %L/D efficiency ratio
 figure(3)
-plot(alpha,ratio_NW_corrected,alpha,ratio_NW) 
+subplot(1,2,1)
+plot(alpha,ratio_NW_corrected) 
 xlabel('alpha (degrees)')
 ylabel('L/D efficiency ratio')
-title('L/D versus Angle of Attack')
-legend('corrected for sting','raw values')
-axis([-5 15 0 55])
+title('L/D v Angle of Attack -corrected- No Winglet')
+axis([0 15 25 50])
+subplot(1,2,2)
+plot(alpha,ratio_NW)
+xlabel('alpha (degrees)')
+ylabel('L/D efficiency ratio')
+title('L/D v Angle of Attack -raw- No Winglet')
+axis([0 15 0 2])
 
 
 
