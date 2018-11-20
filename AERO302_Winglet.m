@@ -23,8 +23,10 @@ lift_NW = [mean(fz_NW_AOA_0) mean(fz_NW_AOA_4) mean(fz_NW_AOA_8) mean(fz_NW_AOA_
 
 %Lift - No Winglet
 rho = 1.225 ;   %standard atmospheric density
-S = .155575 ;   %wing area
-c_l_NW = (2.*lift_NW)./((rho*(v^2)*S)) ;   %coefficient of lift 
+c = .155575 ;   %chord length
+s = .1875 ; %span of wing
+A = c*s ;   %wing area
+c_l_NW = (2.*lift_NW)./((rho*(v^2)*A)) ;   %coefficient of lift 
 
 figure(1)
 plot(alpha,c_l_NW) 
