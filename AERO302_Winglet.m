@@ -94,7 +94,98 @@ axis([0 15 0 2])
 
 
 
+%% Winglet On
+clear all;close all;clc;
+
+load('W_Off');
+load('W_On');
+load('Windoff');
+
+%% Lift Winglet on
+alpha = [0 4 8 9 10 11 12 13 14] ; 
+V = 15;
+rho = 1.225;
+span = .1875;
+chord = .155575;
+SA = span*chord ; % The area would increase dur to the winglet, but I'm
+                  % sure by how much.
+
+for i = 1:9
+    RawLift(1,i) = mean(W_On{i}(:,3));
+   Lift(1,i) =  RawLift(1,i)-mean(Windoff(:,1));
+end
+xlab = ['\alpha(' char(176) ')'];
+% figure
+% plot(alpha,Lift);
+% xlabel(xlab);
+% ylabel('Lift (N)');
+% title('Lift Force - Tie Fighter');
 
 
+   Cl = Lift./(1/2*rho*V^2*SA);
+
+figure
+plot(alpha,Cl);
+xlabel(xlab);
+ylabel('C_l');
+title('C_l - Tie Fighter');
+
+    
+%% Drag
+for i = 1:9
+   RawDrag(1,i) = mean(W_On{i}(:,2));
+   Drag(1,i) = RawDrag(1,i)-1.22;
+   R = 6.4136E-9*alpha(1,i)^7 - 2.4054E-7*alpha(1,i)^6 +...
+       6.3238E-7*alpha(1,i)^5 + 6.7126E-5*alpha(1,i)^4 -...
+       8.0391E-4*alpha(1,i)^3 + 0.0023*alpha(1,i)^2 +...
+       0.0021*alpha(1,i) + 0.0453 ;
+   DragCorected(1,i) = Drag(1,i)*R;
+end
+
+% figure
+% plot(alpha,RawDrag,alpha,DragCorected);
+% xlabel(xlab);
+% ylabel('Drag (N)');
+% title('Drag Force - Tie Fighter');
+% legend('Raw Data','Corrected Data');
+
+
+
+Cd = DragCorected./(1/2*rho*V^2*SA);
+CdRaw = RawDrag./(1/2*rho*V^2*SA);
+
+
+figure
+subplot(1,2,1);
+plot(alpha,Cd);
+xlabel(xlab);
+ylabel('C_d');
+%title('C_d v \alpha - Corrected - Tie Fighter');
+title('Corrected Data');
+
+
+subplot(1,2,2);
+plot(alpha,CdRaw);
+xlabel(xlab);
+ylabel('C_d');
+%title('C_d v \alpha - Raw - Tie Fighter');
+title('Raw Data');
+%% L/D
+LDraw = RawLift./RawDrag;
+LD = Lift./DragCorected;
+figure
+subplot(1,2,2);
+plot(alpha,LDraw);
+xlabel(xlab);
+ylabel('L/D');
+%title('L/D v \alpha - Raw Data - Tie Fighter');
+title('Raw Data');
+
+subplot(1,2,1);
+plot(alpha,LD);
+xlabel(xlab);
+ylabel('L/D');
+%title('L/D v \alpha - Corrected Data - Tie Fighter');
+title('Corrected Data');
 
 
